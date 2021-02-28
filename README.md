@@ -121,7 +121,7 @@ C++ (MSVC)   | 330       | 2270         | 1940       | 485x
 C++ (CLang)  | 1065      | 1874         | 809        | 202x
 Zig          | 1220      | 11714        | 10494      | 2623x
 
-Results are pretty much what you would expect considering that both C++ and Zig do interpetation while Mass does a single-pass JIT. CLang seems to do reasonably well for an interpreter although doing anything computationally expensive would stilll slow down your compilation time dramatically.
+Results are pretty much what you would expect considering that both C++ and Zig do interpretation while Mass does a single-pass JIT. CLang seems to do reasonably well for an interpreter although doing anything computationally expensive would still slow down your compilation time dramatically.
 
 ## Constant Folding
 
