@@ -1,6 +1,6 @@
-## Completely Unscientific Compile Time Execution Benchmark
+# Completely Unscientific Compile Time Execution Benchmark
 
-### Methodology
+## Methodology
 
 Each programs runs a counter 1 000 000 times at compile time and stores a result into a compile-time constant. The counter is then printed at runtime to verify the output value.
 
@@ -21,6 +21,10 @@ And with `time` command on Linux (WSL) taking the "real" time output:
 To measure just the compiled time execution and not the rest of the compiler the code is first compiler with the constant hard-coded, then with the compile time execution and get the difference.
 
 All code is compiled without any optimization to minimize the non-relevant time spent in the compiler.
+
+## Counter
+
+In this benchmark the goal is count from 0 to 1 000 000 integer inside of a loop at compile time. It should give an indication on the overhead of the interpretation inside the compiler.
 
 ### C++
 
@@ -108,6 +112,8 @@ The compiler currently can not be run from the any folder so I had to run it fro
 
 ### Results:
 
+All times are provided in milliseconds.
+
 Language     | Hardcoded | Compile Eval | Delta (ms) | X Times Slower
 ------------ | ----------|--------------|------------|----------------
 Mass         | 12        | 16           | 4          | baseline
@@ -116,3 +122,47 @@ C++ (CLang)  | 1065      | 1874         | 809        | 202x
 Zig          | 1220      | 11714        | 10494      | 2623x
 
 Results are pretty much what you would expect considering that both C++ and Zig do interpetation while Mass does a single-pass JIT. CLang seems to do reasonably well for an interpreter although doing anything computationally expensive would stilll slow down your compilation time dramatically.
+
+## Constant Folding
+
+The goal is to constant fold 1 000 definitions computing the sum of integer `1`. We then sum all the definitions at compile time as well to make sure that the compilers do not skip the computation for unreferenced constants.
+
+Because of the large amount of source code, the test not only measures the speed of constant folding itself but also parsing as there is almost 2mb of the source code.
+
+This test does not require compile-time machinery and should work in any language, but for consistency I'm sticking with C++, Zig and Mass.
+
+### C++
+
+```cpp
+// 1000 times:
+const int64_t i0 = 1 + 1 + ... // 1000times
+
+const int64_t counted = i0 + i1 + ... // 1000times
+```
+
+### Zig
+
+```cpp
+// 1000 times:
+const int64_t i0 = 1 + 1 + ... // 1000times
+
+const int64_t counted = i0 + i1 + ... // 1000times
+```
+
+### Results:
+
+> Hardcoded times are same as in the loop test as the rest of the code besides the constant folding is also identical.
+
+Language     | Hardcoded | Constant Folding | Delta (ms) | X Times Slower
+------------ | ----------|------------------|------------|----------------
+Mass         | 12        | 4362             | 4350       | 11.54x
+C++ (MSVC)   | 330       | 1190             | 860        | 2.28x
+C++ (CLang)  | 1065      | 1442             | 377        | baseline
+Zig          | 1220      | 3818             | 2598       | 6.89x
+
+Clang unsurprisingly is the fastest here as constant folding is its bread and butter. MSVC is slightly behind and Zig id almost 7x slower.
+
+Mass is the more than an order of magnitude slower than Clang. After poking a bit under the hood I can see that the majority of time is actually spend in parsing as it is currently O(n^2) in complexity. The actual JIT part takes around 500ms. There is definitely lots of improvement to be done.
+
+
+
