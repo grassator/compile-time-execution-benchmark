@@ -135,18 +135,27 @@ This test does not require compile-time machinery and should work in any languag
 
 ```cpp
 // 1000 times:
-const int64_t i0 = 1 + 1 + ... // 1000times
+const int64_t c0 = 1 + 1 + ... // 1000times
 
-const int64_t counted = i0 + i1 + ... // 1000times
+const int64_t counted = c0 + c1 + ... // 1000times
 ```
 
 ### Zig
 
-```cpp
+```zig
 // 1000 times:
-const int64_t i0 = 1 + 1 + ... // 1000times
+const c0 : i64 = 1 + 1 + ... // 1000times
 
-const int64_t counted = i0 + i1 + ... // 1000times
+const counted : i64 = c0 + c1 + ... // 1000times
+```
+
+### Mass
+
+```zig
+// 1000 times:
+c0 :: 1 + 1 + ... // 1000times
+
+counted :: c0 + c1 + ... // 1000times
 ```
 
 ### Results:
