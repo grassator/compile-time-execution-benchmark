@@ -171,9 +171,7 @@ Zig          | 1220      | 3818             | 2598       | 6.89x
 
 Clang unsurprisingly is the fastest here as constant folding is its bread and butter. MSVC is slightly behind and Zig id almost 7x slower.
 
-Mass is the more than an 4 times of magnitude slower than Clang. Constant folding currently does not actually go through JIT and it is unclear if it will. Judging by the profile
-
-After poking a bit under the hood I can see that the majority of time is actually spend in parsing as it is currently O(n^2) in complexity. The actual JIT part takes around 500ms. There is definitely lots of improvement to be done.
+Mass is the more than an 4 times of magnitude slower than Clang. Constant folding currently does not actually go through JIT and it is unclear if it will. After poking a bit under the hood I can see that the majority of time is actually spend in parsing as it is currently O(n^2) in complexity. There is definitely lots of improvement to be done.
 
 
 
