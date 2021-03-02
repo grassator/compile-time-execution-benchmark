@@ -91,7 +91,7 @@ Zig does very aggressive caching, so make sure to remove all artifacts and `zig-
 
 ### [Mass](https://github.com/grassator/mass)
 
-**Version**: Commit a387bb84155eceff12ff373512c5044452cf9e22 (/Ox build)
+**Version**: Commit 060e546cc2da620e9aaa9c9fca11f0f67a0ab94c (/Ox build)
 
 The counter code is:
 
@@ -164,14 +164,16 @@ counted :: c0 + c1 + ... // 1000times
 
 Language     | Hardcoded | Constant Folding | Delta (ms) | X Times Slower
 ------------ | ----------|------------------|------------|----------------
-Mass         | 12        | 4362             | 4350       | 11.54x
+Mass         | 12        | 1628             | 1616       | 4.29x
 C++ (MSVC)   | 330       | 1190             | 860        | 2.28x
 C++ (CLang)  | 1065      | 1442             | 377        | baseline
 Zig          | 1220      | 3818             | 2598       | 6.89x
 
 Clang unsurprisingly is the fastest here as constant folding is its bread and butter. MSVC is slightly behind and Zig id almost 7x slower.
 
-Mass is the more than an order of magnitude slower than Clang. After poking a bit under the hood I can see that the majority of time is actually spend in parsing as it is currently O(n^2) in complexity. The actual JIT part takes around 500ms. There is definitely lots of improvement to be done.
+Mass is the more than an 4 times of magnitude slower than Clang. Constant folding currently does not actually go through JIT and it is unclear if it will. Judging by the profile
+
+After poking a bit under the hood I can see that the majority of time is actually spend in parsing as it is currently O(n^2) in complexity. The actual JIT part takes around 500ms. There is definitely lots of improvement to be done.
 
 
 
