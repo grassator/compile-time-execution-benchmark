@@ -20,72 +20,36 @@ And with `time` command on Linux (WSL) taking the "real" time output:
 
 To measure just the compiled time execution and not the rest of the compiler the code is first compiler with the constant hard-coded, then with the compile time execution and get the difference.
 
-All code is compiled without any optimization to minimize the non-relevant time spent in the compiler.
+All code is compiled without any optimization to minimize the non-relevant time spent in the compiler. Below you can find the version of the compiler and commands used.
 
-## Counter
-
-In this benchmark the goal is count from 0 to 1 000 000 integer inside of a loop at compile time. It should give an indication on the overhead of the interpretation inside the compiler.
-
-### C++
-
-C++ has support for `constepxr` that can contain loops:
-
-```cpp
-constexpr uint64_t counter() {
-    uint64_t i = 0;
-    for (; i < 1000000; i = i + 1);
-    return i;
-}
-
-const uint64_t counted = counter();
-```
-
-#### MSVC
+### MSVC
 
 **Version**: 19.28.29337 for x64
 
-The command used:
-
 ```ps
-cl /Od loop.cpp
+cl /Od SOURCE_FILE
 ```
 
-#### Clang (WSL2)
+### Clang (WSL2)
 
 **Version**: clang version 10.0.0-4ubuntu1
 
-The command used:
-
 ```ps
-clang -O0 .\loop.cpp -o loop.exe
+clang -O0 SOURCE_FILE
 ```
 
 
 ### [Zig](http://ziglang.org)
 
-**Version**: zig-windows-x86_64-0.8.0-dev.1359+e65b6d99a
+**Version**: zig-windows-x86_64-0.8.0-dev.1359+e65b6d99a *
 
-In Zig, there is a very low quoata for any compile time execution, so if we run the following code, we get an error (evaluation exceeded 1000 backwards branches):
-
-```zig
-fn counter() i64 {
-    var i: i64 = 0;
-    while (i < 1000000) {
-        i = i + 1;
-    }
-    return i;
-}
-
-const counted = counter(); 
-```
-
-To fix this I needed to add `@setEvalBranchQuota(10000000);` to the body of the `counter()` function.
-
-The compilation is done with:
+> *This is "old" C++ compiler that is known to be quite slow. New self-hosted version is being developed that is substantially faster. 
 
 ```zig
-zig build-exe loop.zig
+zig build-exe SOURCE_FILE
 ```
+
+Compile time execution is run with @setEvalBranchQuota(10000000);
 
 Zig does very aggressive caching, so make sure to remove all artifacts and `zig-cache` folder between the builds. Since we are measuring the delta, the time it takes to compile standard libraries should not affect the result (much).
 
@@ -93,22 +57,13 @@ Zig does very aggressive caching, so make sure to remove all artifacts and `zig-
 
 **Version**: Commit ec80206d056bf8107105cf525e744fecec856a70 (/Ox build)
 
-The counter code is:
-
-```zig
-counter :: () -> (s64) {
-  i := 0
-  while i < 1000000 { i = i + 1 }
-  i
-}
-counted :: counter()
-```
-
-The compiler currently can not be run from the any folder so I had to run it from the project repository instead:
-
 ```ps
-.\build\mass.exe ..\compile-time-benchmark\loop.mass
+.\build\mass.exe ..\compile-time-benchmark\SOURCE_FILE
 ```
+
+## Counter
+
+In this benchmark the goal is count from 0 to 1 000 000 integer inside of a loop at compile time. It should give an indication on the overhead of the interpretation inside the compiler.
 
 ### Results:
 
@@ -131,33 +86,6 @@ Because of the large amount of source code, the test not only measures the speed
 
 This test does not require compile-time machinery and should work in any language, but for consistency I'm sticking with C++, Zig and Mass.
 
-### C++
-
-```cpp
-// 1000 times:
-const int64_t c0 = 1 + 1 + ... // 1000times
-
-const int64_t counted = c0 + c1 + ... // 1000times
-```
-
-### Zig
-
-```zig
-// 1000 times:
-const c0 : i64 = 1 + 1 + ... // 1000times
-
-const counted : i64 = c0 + c1 + ... // 1000times
-```
-
-### Mass
-
-```zig
-// 1000 times:
-c0 :: 1 + 1 + ... // 1000times
-
-counted :: c0 + c1 + ... // 1000times
-```
-
 ### Results:
 
 > Hardcoded times are same as in the loop test as the rest of the code besides the constant folding is also identical.
@@ -173,5 +101,21 @@ Clang unsurprisingly is the fastest here as constant folding is its bread and bu
 
 Mass is a bit less than 4 times slower than Clang. Constant folding currently does not actually go through JIT and it is unclear if it will. After poking a bit under the hood I can see that the majority of time is actually spend in parsing as it is currently O(n^2) in complexity. There is definitely lots of improvement to be done.
 
+## One Million Calls
 
+The goal is to compile a file that contains 1 000 000 calls to a `print` function defined in the same value.
 
+### Results:
+
+> Hardcoded times are same as in the loop test as the rest of the code besides the constant folding is also identical.
+
+Language     | Constant Folding | X Times Slower | Throughput (mb / sec)
+------------ | -----------------|----------------|----------------------
+Mass         | 3977             | baseline       | 2.16
+C++ (MSVC)   | 19510            | 4.91x          | 0.44
+C++ (CLang)  | 9712             | 2.44x          | 0.88
+Zig*         | 19258            | 4.84x          | 0.45
+
+Mass has an unfair advantage here as it does not output debug symbols. 
+
+> *Self-hosted version of Zig that is in development at the time of writing is reported to be able to complete this test in less than one second which would make it a clear winner.
