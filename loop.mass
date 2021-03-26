@@ -20,15 +20,13 @@ fn print(integer : s64) {
   }
 
   stack buffer u8[64]
-  const output_size = {
-    if integer < 0 then {
-      static minus_code = "-".bytes.0
-      buffer.0 = minus_code
-      integer = 0 - integer
-      count + 1
-    } else {
-      count
-    }
+  const output_size = if integer < 0 then {
+    static minus_code = "-".bytes.0
+    buffer.0 = minus_code
+    integer = 0 - integer
+    count + 1
+  } else {
+    count
   }
 
   for mut integer_index = 0 ; integer_index < count ; {

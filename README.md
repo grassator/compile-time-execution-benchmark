@@ -109,7 +109,7 @@ The goal is to compile a file that contains 1 000 000 calls to a `print` functio
 
 > Hardcoded times are same as in the loop test as the rest of the code besides the constant folding is also identical.
 
-Language     | Constant Folding | X Times Slower | Throughput (mb / sec)
+Language     | Compilation, ms  | X Times Slower | Throughput (mb / sec)
 ------------ | -----------------|----------------|----------------------
 Mass         | 3977             | baseline       | 2.16
 C++ (MSVC)   | 19510            | 4.91x          | 0.44
