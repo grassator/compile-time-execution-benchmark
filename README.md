@@ -55,7 +55,7 @@ Zig does very aggressive caching, so make sure to remove all artifacts and `zig-
 
 ### [Mass](https://github.com/grassator/mass)
 
-**Version**: Commit 00bc1dff0c859cc4dfb2a6c9d728684d0575514b (/Ox build)
+**Version**: Commit 305f95d634f14ff1460fb41fe8c9c8dceb7ed723 (/Ox build)
 
 ```ps
 .\build\mass.exe ..\compile-time-benchmark\SOURCE_FILE
@@ -111,9 +111,11 @@ The goal is to compile a file that contains 1 000 000 calls to a `print` functio
 
 Language     | Compilation, ms  | X Times Slower | Throughput (mb / sec)
 ------------ | -----------------|----------------|----------------------
-Mass         | 12447            | 1.28x          | 0.69
-C++ (MSVC)   | 19510            | 2.01x          | 0.44
-C++ (CLang)  | 9712             | baseline       | 0.88
-Zig*         | 19258            | 1.98x          | 0.45
+Mass         | 4317             | baseline       | 1.99
+C++ (MSVC)   | 19510            | 4.52x          | 0.44
+C++ (CLang)  | 9712             | 2.25x          | 0.88
+Zig*         | 19258            | 4.46x          | 0.45
+
+Mass has an unfair advantage here as it does not support debug symbols.
 
 > *Self-hosted version of Zig that is in development at the time of writing is reported to be able to complete this test in less than one second which would make it a clear winner.

@@ -43,8 +43,8 @@ fn print() {
   WriteFile(0, 0, 0, 0, 0)
 }
 
-ExitProcess :: (status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
-WriteFile :: (
+fn ExitProcess(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
+fn WriteFile(
   status : s64,
   buffer : [u8],
   size : s32,

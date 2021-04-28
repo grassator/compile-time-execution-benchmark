@@ -1039,9 +1039,9 @@ fn print(integer : s64) {
   WriteFile(GetStdHandle(-11), &buffer, cast(s32, output_size), 0, 0)
 }
 
-ExitProcess :: (status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
-GetStdHandle :: (handle : s32) -> (s64) external("kernel32.dll", "GetStdHandle")
-WriteFile :: (
+fn ExitProcess(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
+fn GetStdHandle(handle : s32) -> (s64) external("kernel32.dll", "GetStdHandle")
+fn WriteFile(
   status : s64,
   buffer : [u8],
   size : s32,
