@@ -34,23 +34,23 @@ pub fn main() !void {
 
 
 const mass = body => `
-fn main() {
+main :: fn() {
 ${body}
   ExitProcess(0)
 }
 
-fn print() {
-  WriteFile(0, 0, 0, 0, 0)
-}
-
-fn ExitProcess(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
-fn WriteFile(
+ExitProcess :: fn(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
+WriteFile :: fn(
   status : s64,
   buffer : [u8],
   size : s32,
   bytes_written : s64,
   overlapped : s64
 ) -> (s64) external("kernel32.dll", "WriteFile")
+
+print :: fn() {
+  WriteFile(0, 0, 0, 0, 0)
+}
 `;
 
 {

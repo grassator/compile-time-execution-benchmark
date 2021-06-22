@@ -50,52 +50,55 @@ pub fn main() !void {
 const mass = body => `
 ${body}
 
-fn main() {
+main :: fn() {
   print(counted)
   ExitProcess(0)
 }
 
-fn print(integer : s64) {
-  const count = {
-    mut count = 0
-    for mut temp = integer ; temp ; temp = temp / 10 {
-      count = count + 1
-    }
-    if count then count else 1
-  }
+cached_stdout_handle := 0
+startup(fn() {
+  cached_stdout_handle = GetStdHandle(-11)
+})
 
-  stack buffer u8[64]
-  const output_size = {
-    if integer < 0 then {
-      static minus_code = "-".bytes.0
-      buffer.0 = minus_code
-      integer = 0 - integer
-      count + 1
-    } else {
-      count
-    }
-  }
-
-  for mut integer_index = 0 ; integer_index < count ; {
-    integer_index = integer_index + 1
-    const digit = cast(u8, integer % 10)
-    const digit_index = output_size - integer_index
-    static zero_code = "0".bytes.0
-    buffer.(digit_index) = zero_code + digit
-    integer = integer / 10
-  }
-  WriteFile(GetStdHandle(-11), &buffer, cast(s32, output_size), 0, 0)
-}
-
-fn ExitProcess(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
-fn GetStdHandle(handle : s32) -> (s64) external("kernel32.dll", "GetStdHandle")
-fn WriteFile(
+ExitProcess :: fn(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
+GetStdHandle :: fn(handle : s32) -> (s64) external("kernel32.dll", "GetStdHandle")
+WriteFile :: fn(
   status : s64,
   buffer : [u8],
   size : s32,
   bytes_written : s64,
   overlapped : s64
 ) -> (s64) external("kernel32.dll", "WriteFile")
+
+print :: fn(integer : s64) {
+  count := {
+    count := 0
+    for temp := integer ; temp ; temp = temp / 10 {
+      count = count + 1
+    }
+    if count then count else 1
+  }
+
+  buffer : u8[64]
+  output_size := if integer < 0 then {
+    minus_code :: "-".bytes.0
+    buffer.0 = minus_code
+    integer = 0 - integer
+    count + 1
+  } else {
+    count
+  }
+
+  for integer_index := 0 ; integer_index < count ; {
+    integer_index = integer_index + 1
+    digit := cast(u8, integer % 10)
+    digit_index := output_size - integer_index
+    zero_code :: "0".bytes.0
+    buffer.(digit_index) = zero_code + digit
+    integer = integer / 10
+  }
+  WriteFile(cached_stdout_handle, &buffer, cast(s32, output_size), 0, 0)
+}
 `;
 
 {
