@@ -42,7 +42,7 @@ ${body}
 ExitProcess :: fn(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
 WriteFile :: fn(
   status : s64,
-  buffer : [u8],
+  buffer : &u8,
   size : s32,
   bytes_written : s64,
   overlapped : s64

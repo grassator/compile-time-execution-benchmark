@@ -8,7 +8,7 @@ constexpr int64_t counter() {
     return i;
 }
 
-const int64_t counted = 1000000;
+const int64_t counted = counter();
 
 int main() {
   printf("%" PRIi64, counted);

@@ -64,7 +64,7 @@ ExitProcess :: fn(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
 GetStdHandle :: fn(handle : s32) -> (s64) external("kernel32.dll", "GetStdHandle")
 WriteFile :: fn(
   status : s64,
-  buffer : [u8],
+  buffer : &u8,
   size : s32,
   bytes_written : s64,
   overlapped : s64
@@ -79,7 +79,7 @@ print :: fn(integer : s64) {
     if count then count else 1
   }
 
-  buffer : u8[64]
+  buffer : u8 * 64
   output_size := if integer < 0 then {
     minus_code :: "-".bytes.0
     buffer.0 = minus_code
