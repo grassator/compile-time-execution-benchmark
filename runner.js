@@ -68,7 +68,7 @@ function showCompilerVersions() {
 function timeCompilation(baseName) {
   console.log(`${baseName}:`);
   const mass = measure(() => childProcess.execSync(
-    `build\\mass.exe --output mass-${baseName}.exe ${__dirname}/${baseName}.mass`, {
+    `build\\mass.exe --output ${__dirname}/mass-${baseName}.exe ${__dirname}/${baseName}.mass`, {
       cwd: MASS_FOLDER,
       stdio: "inherit",
     }
