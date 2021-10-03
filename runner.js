@@ -29,6 +29,7 @@ function clean() {
 
 function compileSampleCode() {
   console.log("Generating Sample Code...");
+  childProcess.execSync(`node baseline`);
   childProcess.execSync(`node folding`);
   childProcess.execSync(`node print`);
 }
@@ -62,7 +63,7 @@ function showCompilerVersions() {
 }
 
 /**
- * @param {"folding"|"loop"|"print"} baseName
+ * @param {"baseline"|"folding"|"loop"|"print"} baseName
  * @returns {{zig: number, msvc: number, clang: number, mass: number}}
  */
 function timeCompilation(baseName) {
@@ -86,6 +87,7 @@ function timeCompilation(baseName) {
 
 function timeAll() {
   console.log("Measuring times...");
+  timeCompilation("baseline");
   timeCompilation("folding");
   timeCompilation("print");
   timeCompilation("loop");
