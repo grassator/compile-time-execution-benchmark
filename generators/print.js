@@ -32,6 +32,17 @@ pub fn main() !void {
   fs.writeFileSync("print.zig", zig(body));
 }
 
+const js = body => `
+function print() {}
+
+${body}
+`;
+
+{
+  const body = Array.from({length: 1_000_000}).map((_, i) => `print();\n`).join("");
+  fs.writeFileSync("print.js", js(body));
+}
+
 
 const mass = body => `
 main :: fn() {

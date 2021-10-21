@@ -35,6 +35,18 @@ pub fn main() !void {
 }
 
 
+const js = body => `
+${body}
+
+console.log(counted);
+`;
+
+{
+  const body = `const counted  = 1000000;\n`
+  fs.writeFileSync("baseline.js", js(body));
+}
+
+
 const mass = body => `
 ${body}
 

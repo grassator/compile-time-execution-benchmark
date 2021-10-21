@@ -47,6 +47,25 @@ pub fn main() !void {
 }
 
 
+const js = body => `
+
+${body}
+
+console.log(counted)
+`;
+
+{
+  const definitions = Array.from({length: 1000}).map((_, i) => {
+    const expr = Array.from({length: 1000}).fill(1).join("+");
+    return `const c${i} = ${expr};\n`
+  }).join("");
+  const expr = Array.from({length: 1000}).map((_, i) => `c${i}`).join("+");
+  const counted = `const counted = ${expr};\n`
+  const body = definitions + counted;
+  fs.writeFileSync("folding.js", js(body));
+}
+
+
 const mass = body => `
 ${body}
 

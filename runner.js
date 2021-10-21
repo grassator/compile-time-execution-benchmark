@@ -64,7 +64,7 @@ function showCompilerVersions() {
 
 /**
  * @param {"baseline"|"folding"|"loop"|"print"} baseName
- * @returns {{zig: number, msvc: number, clang: number, mass: number}}
+ * @returns {{zig: number, msvc: number, clang: number, mass: number, js: number}}
  */
 function timeCompilation(baseName) {
   console.log(`${baseName}:`);
@@ -82,7 +82,9 @@ function timeCompilation(baseName) {
   rmdir("zig-cache");
   const zig = measure(() => childProcess.execSync(`zig build-exe -ODebug ${baseName}.zig`));
   console.log(`  Zig: ${zig}ms`);
-  return {mass, msvc, clang, zig};
+  const js = measure(() => childProcess.execSync(`node ${baseName}.js`));
+  console.log(`  js: ${js}ms`);
+  return {mass, msvc, clang, zig, js};
 }
 
 function timeAll() {
