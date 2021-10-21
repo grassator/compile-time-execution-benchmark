@@ -29,9 +29,9 @@ function clean() {
 
 function compileSampleCode() {
   console.log("Generating Sample Code...");
-  childProcess.execSync(`node baseline`);
-  childProcess.execSync(`node folding`);
-  childProcess.execSync(`node print`);
+  childProcess.execSync(`node generators/baseline`);
+  childProcess.execSync(`node generators/folding`);
+  childProcess.execSync(`node generators/print`);
 }
 
 /**
