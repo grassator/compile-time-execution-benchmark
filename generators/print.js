@@ -47,20 +47,14 @@ ${body}
 const mass = body => `
 main :: fn() {
 ${body}
-  ExitProcess(0)
+  
+  process :: import("std/process")
+  process.exit(0)
 }
 
-ExitProcess :: fn(status : s32) -> (s64) external("kernel32.dll", "ExitProcess")
-WriteFile :: fn(
-  status : s64,
-  buffer : &u8,
-  size : s32,
-  bytes_written : s64,
-  overlapped : s64
-) -> (s64) external("kernel32.dll", "WriteFile")
-
 print :: fn() {
-  WriteFile(0, 0, 0, 0, 0)
+  io :: import("std/io")
+  io.print("")
 }
 `;
 
