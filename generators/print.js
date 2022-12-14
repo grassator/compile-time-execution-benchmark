@@ -45,14 +45,14 @@ ${body}
 
 
 const mass = body => `
-main :: fn() {
+main :: fn() -> () {
 ${body}
-  
+
   process :: import("std/process")
   process.exit(0)
 }
 
-print :: fn() {
+print :: fn() -> () {
   io :: import("std/io")
   io.print("")
 }

@@ -69,7 +69,7 @@ console.log(counted)
 const mass = body => `
 ${body}
 
-main :: fn() {
+main :: fn() -> () {
   io :: import("std/io")
   process :: import("std/process")
   io.print(counted)
